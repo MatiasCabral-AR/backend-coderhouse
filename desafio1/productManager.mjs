@@ -5,40 +5,43 @@ export default class ProductManager{
     }
     // Main functions
     addProduct(product){
-        if (Object.keys(this.keys).toString() === product.keys.toString() && this.#findCode(product.code)) {
+        if (this.#isValid(product)) {
             this.#assignId(product);
             this.products.push(product);
-            console.log(`The next product will be added : \n ${product}`)
+            console.log(`The next product will be added : \n ${JSON.stringify(product)}`)
         } else {
-            console.log('Producto Invalido')
+            console.log('Error : Invalid Product')
         }
-        const res = Object.keys(this.keys).toString() === product.keys.toString() && Object.entries(this.products) 
-            ? this.#assignId(product) && this.products.push(product) : false
-        return res
     }
 
     getProducts(){
         return this.products
     }
 
-    getProductByCode(code){
-        const product = this.products.find( product => product.code === code )
+    getProductById(id){
+        const product = this.products.find( product => product.id === id )
         product ? console.log(product) : console.log('Producto no encontrado')
-        Promise.all()
     }
     // Private Aux functions
     #assignId(product){
-        this.products.length() === 0 ? product.id = 1 : product.id = this.products[-1].id + 1
+        this.products.length === 0 ? product.id = 1 : product.id = this.products[-1].id + 1
         return product
     }
 
-    #findCode(product){
+    #validCode(product){
         const codes = []
-        Object.entries(this.products).forEach(([key, value]) => {
-            if(key.toString() === 'code'){
+        Object.entries(this.products).forEach(([key, value]) => { // Desarmamos el Array de objetos y los separamos en clave-valor
+            if(key.toString() === 'code'){ // Si la clave es code guardamos su valor en un array
                 codes.push(value)
             }
         })
-        return codes.includes(product.code) ? false : true
+        return !codes.includes(product.code) ? false : true // Si el nuevo codigo no se encuentra en el array previamente creado (Invertimos el resultado del includes)
+    }
+    #isValid(product){
+        // Si las keys predefinidas coinciden con las keys del producto que entra y validCode() retorna true. El producto es valido. 
+        if(Object.values(this.keys).toString() === Object.keys(product).toString() && this.#validCode(product.code)){
+            return true
+        }
+        return false
     }
 }
