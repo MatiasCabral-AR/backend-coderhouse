@@ -1,8 +1,8 @@
 export default class ProductManager{
     constructor(){
         this.products = [];
-        this.keys = ["title", "description", "price", "thumbnail", "code", "stock"];
     }
+    static #keys = ["title", "description", "price", "thumbnail", "code", "stock"];
     // Main functions
     addProduct(product){
         if (this.#isValid(product)) {
@@ -39,7 +39,7 @@ export default class ProductManager{
     }
     #isValid(product){
         // Si las keys predefinidas coinciden con las keys del producto que entra y validCode() retorna true. El producto es valido. 
-        if(Object.values(this.keys).toString() === Object.keys(product).toString() && this.#validCode(product.code)){
+        if(Object.values(this.#keys).toString() === Object.keys(product).toString() && this.#validCode(product.code)){
             return true
         }
         return false
