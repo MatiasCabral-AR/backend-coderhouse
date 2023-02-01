@@ -35,7 +35,7 @@ export default class ProductManager{
         }
     }
     async deletebyId(id){
-        // Funcion deleteById que sera usada en #findProductAndExecute
+        // Funcion foo que sera usada en #findProductAndExecute
         async function foo(index, products, path){
             if(index >= 0){
                 products.splice(index, 1)
