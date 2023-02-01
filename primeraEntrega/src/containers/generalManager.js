@@ -1,6 +1,5 @@
 import {promises as fs} from 'fs'
 import { writeFileSync, readFileSync } from 'fs';
-
 export default class GeneralManager{
     constructor(path){
         this.path = path;
@@ -23,10 +22,32 @@ export default class GeneralManager{
         const array = await get()
         const index = array.map(element => element.id).indexOf(object.id)
         try {
-            let result = await foo(index, array, this.path)
+            const result = await foo(index, array, this.path)
             return result
-        } catch (error) {
-            return false
+        } catch(error) { return false }
+    }
+    async getAll(limit){
+        try {
+            const array = JSON.parse(await fs.readFile(this.path, 'utf-8'))
+            if(limit) return array.slice(0, limit)
+            else return array
+        } catch(error) { return false }
+    }
+    async getById(id){
+        const array =  await this.getAll();
+        const object = array.find( element => element.id === id )
+        return object ? object : false
+    }
+    async deleteById(id){
+        // La funcion foo sera usada en #findAndExecute
+        async function foo(index, array, path){
+            if(index >= 0){
+                array.splice(index, 1)
+                await fs.writeFile(path, JSON.stringify(array, null, 2))
+                return true
+            }else{throw new Error}
         }
+        const result = await this.findAndExecute({id : id}, foo, this.getAll())
+        return result
     }
 }

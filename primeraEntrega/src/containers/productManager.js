@@ -1,6 +1,6 @@
-import {promises as fs} from 'fs'
+import GeneralManager from './generalManager.js';
 import { writeFileSync, readFileSync } from 'fs';
-export default class ProductManager{
+export default class ProductManager extends GeneralManager{
     constructor(path){
         this.path = path;
         this.#autoExecute()
@@ -63,7 +63,8 @@ export default class ProductManager{
 
     async getProductById(id, products = false){
         if(!products) products = await this.getProducts()
-        let result = products.find( product => product.id === id ) ? true : false
+        const product = products.find( product => product.id === id )
+        const result = product ? product : false
         return result
     }
     async updateProduct(product){
