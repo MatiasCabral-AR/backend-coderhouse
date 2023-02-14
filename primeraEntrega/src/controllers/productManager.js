@@ -1,31 +1,18 @@
 import GeneralManager from './generalManager.js';
-import { writeFileSync, readFileSync } from 'fs';
+import {writeFile} from 'fs/promises';
 export default class ProductManager extends GeneralManager{
-    constructor(path){
-        this.path = path;
-        this.#autoExecute()
+    constructor(){
+            super('../models/products.json')
         }
-    async #autoExecute(){
-        // Esta funcion es de ejecucion automatica y se encarga de comprobar si existe
-        // o no el archivo y tambien si esta vacio
-        try {
-            const file = readFileSync(this.path, 'utf-8')
-            if(file.length === 0) throw new Error('File empty')
-        } catch (error) {
-            console.log(error.message)
-            writeFileSync(this.path, JSON.stringify(Array.from(0), null, 2))
-            console.log('\nFile created or replaced')
-        }
-    }
     // ------------------------------------------------------------------------------------
     // Main functions
     async addProduct(product){
-        const products = await this.getProducts()
-        if (this.#isValid(product, this.#keys(), products)) {
-            this.#assignId(product, products);
+        const products = await this.getAll()
+        if (this.#isValid(product, this.#keys(), products)) {// Chequeamos que el producto sea valido
+            this.#assignId(product, products); // Le asignamos un id en base a los productos existentes
             try {
                 products.push(product)
-                await fs.writeFile(this.path, JSON.stringify(products, null, 2))
+                await writeFile(this.path, JSON.stringify(products, null, 2))
                 return product
             } catch (error) {
                 console.log('Error while saving product, please try again.')
@@ -33,39 +20,6 @@ export default class ProductManager extends GeneralManager{
         } else {
             return false
         }
-    }
-    async deletebyId(id){
-        // Funcion deleteById que sera usada en #findProductAndExecute
-        async function foo(index, products, path){
-            if(index >= 0){
-                products.splice(index, 1)
-                await fs.writeFile(path, JSON.stringify(products, null, 2))
-                return true
-            }else{throw new Error}
-        }
-        let result = await this.#findProductAndExecute({id : id}, foo)
-        return result
-    }
-    async getProducts(limit){
-        try {
-            const products = JSON.parse(await fs.readFile(this.path, 'utf-8'))
-            if(limit){
-                let result = products.slice(0, limit)
-                return result
-            }
-            else{
-                return products
-            }
-        } catch (error) {
-            return false
-        }
-    }
-
-    async getProductById(id, products = false){
-        if(!products) products = await this.getProducts()
-        const product = products.find( product => product.id === id )
-        const result = product ? product : false
-        return result
     }
     async updateProduct(product){
         // Funcion updateProduct que sera usada en #findProductAndExecute
@@ -78,11 +32,11 @@ export default class ProductManager extends GeneralManager{
                     })
                 })
                 products[index] = product
-                await fs.writeFile(path, JSON.stringify(products, null, 2))
+                await writeFile(path, JSON.stringify(products, null, 2))
                 return [product, oldProduct]
             }else{throw new Error}
         }
-        let result = await this.#findProductAndExecute(product, foo)
+        let result = await this.findProductAndExecute(product, foo)
         return result
     }
     // ------------------------------------------------------------------------------------
@@ -108,23 +62,33 @@ export default class ProductManager extends GeneralManager{
         }
         return false
     }
+    #typeOf(productKey, productValue){
+        const productKeyIndex = this.keys().indexOf(productKey)
+        if(typeof productValue === this.#keyTypes()[productKeyIndex]){
+            return true
+        }
+        return false
+    }
+    #keyTypes(){
+        return ['string', 'string', 'number', 'string', 'string', 'number']
+    }
     #keys(){
         return ["title", "description", "price", "thumbnail", "code", "stock"];
     }
-    #validCode(code, products){
+    #checkValues(product){
+        Object.entries(product).forEach(([key, value]) => {
+            if(!this.#typeOf(key, value)){
+                return false
+            }
+        })
+        return true
+    }
+    #checkKeys(product){
+        return Object.values(this.#keys()).toString() === Object.keys(product).toString()
+    }
+    #checkCode(code, products){
         // Funcion que controla que el codigo de un producto dado no
         // coincida con los codigos de los productos existentes
         return this.#getCodes(products).includes(code) ? false : true
-    }
-    async #findProductAndExecute(product, foo){
-        // Funcion generica de busqueda de indice y ejecucion de funcion (foo)
-        const products = await this.getProducts()
-        const index = products.map(element => element.id).indexOf(product.id)
-        try {
-            let result = await foo(index, products, this.path)
-            return result
-        } catch (error) {
-            return false
-        }
     }
 }

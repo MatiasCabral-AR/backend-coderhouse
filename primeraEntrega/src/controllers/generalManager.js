@@ -47,7 +47,8 @@ export default class GeneralManager{
                 return true
             }else{throw new Error}
         }
-        const result = await this.findAndExecute({id : id}, foo, this.getAll())
+        const obj = await this.getById(id)
+        const result = await this.findAndExecute(obj, foo, this.getAll())
         return result
     }
 }
