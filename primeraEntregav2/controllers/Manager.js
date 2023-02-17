@@ -30,17 +30,13 @@ export default class Manager{
         return object ? object : false
     }
     async deleteById(id){
-        // La funcion foo sera usada en #findAndExecute
-        async function foo(index, array, path){
-            if(index >= 0){
-                array.splice(index, 1)
-                await fs.writeFile(path, JSON.stringify(array, null, 2))
-                return true
-            }else{throw new Error}
-        }
-        const obj = await this.getById(id)
-        const result = await this.findAndExecute(obj, foo, this.getAll())
-        return result
+        const array = await this.getAll()
+        const object = array.find(element => element.id === id)
+        if(object === undefined){
+            return false}
+        const newArray = array.filter((element) => element !== object)
+        await fs.writeFile(this.path, JSON.stringify(newArray, null, 2))
+        return object
     }
     
     // ------------------------------------------------------------------------------------
@@ -50,15 +46,5 @@ export default class Manager{
         // Funcion de asignacion de id de un objeto basado en el array contenedor
         array.length === 0 ? object.id = 1 : object.id = array[array.length - 1].id + 1
         return object
-    }
-
-    async findAndExecute(object, foo, get){
-        // Funcion generica de busqueda de indice y ejecucion de funcion (foo)
-        const array = await get()
-        const index = array.map(element => element.id).indexOf(object.id)
-        try {
-            const result = await foo(index, array, this.path)
-            return result
-        } catch(error) { return false }
     }
 }

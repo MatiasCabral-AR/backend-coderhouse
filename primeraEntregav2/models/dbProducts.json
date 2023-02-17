@@ -1,0 +1,115 @@
+[
+  {
+    "title": "Buzo Techwear Manga Patchwork",
+    "description": "Regular Fit, Cuello Redondo, Casual, Urbano, All Season",
+    "price": 7000,
+    "thumbnail": "/resources/img/buzo1-1.jpg",
+    "code": "js7hncj2",
+    "stock": 50
+  },
+  {
+    "id": 1,
+    "description": [
+      "Regular Fit",
+      "Cuello Redondo",
+      "Casual, Urbano",
+      "Poliester",
+      "All Season"
+    ],
+    "title": "Buzo Techwear Manga Patchwork",
+    "price": 7000,
+    "thumbnail": "/resources/img/buzo1-1.jpg",
+    "code": "jks6398d",
+    "stock": 50
+  },
+  {
+    "id": 2,
+    "description": [
+      "Slim Fit",
+      "Cuello Tiro Alto",
+      "Diario, Informal",
+      "Jersey",
+      "Primavera, Otoño, Invierno"
+    ],
+    "title": "Sweater Cuello Tiro Alto",
+    "price": 5500,
+    "thumbnail": "/resources/img/buzo2-1.jpg",
+    "code": "ln64sgp0",
+    "stock": 50
+  },
+  {
+    "id": 3,
+    "description": [
+      "Regular Fit",
+      "Cuello Redondo Ancho",
+      "Urban, Tech",
+      "Algodon",
+      "All Season"
+    ],
+    "title": "Buzo con Estampado y Patchwork",
+    "price": 7200,
+    "thumbnail": "/resources/img/buzo3-1.jpg",
+    "code": "1fsynf67",
+    "stock": 50
+  },
+  {
+    "id": 4,
+    "description": [
+      "Regular Fit",
+      "Cuello Redondo",
+      "Diario, Informal",
+      "Poliester",
+      "All Season"
+    ],
+    "title": "Buzo Casual con Patrones",
+    "price": 7500,
+    "thumbail": "/resources/img/buzo4-1.jpg",
+    "code": "ijdslsc4",
+    "stock": 50
+  },
+  {
+    "id": 5,
+    "description": [
+      "Oversize",
+      "Hoodie",
+      "Tech, Urbano",
+      "Algodon",
+      "All Season"
+    ],
+    "title": "Hoodie Oversize Urban Tech con cierre y aros",
+    "price": 7500,
+    "thumbail": "/resources/img/buzo5-1.jpg",
+    "code": "ll84scb6",
+    "stock": 50
+  },
+  {
+    "id": 7,
+    "description": [
+      "Regular Fit",
+      "Cuello Redondo",
+      "Tech, Urbano",
+      "Algodon",
+      "Verano, Primavera"
+    ],
+    "title": "Remera 2 Piezas Fake en Contraste",
+    "price": 3200,
+    "thumbnail": "/resources/img/remera1-1.jpg",
+    "code": "ajn64ds0",
+    "stock": 50
+  },
+  {
+    "title": "Jogger Techwear con Tiras (producto modificado)",
+    "description": [
+      "Jogger Techwear",
+      "Bota Puño largo",
+      "Tech, Tactica",
+      "Algodon, Poliester",
+      "All Season"
+    ],
+    "price": 99500,
+    "thumbnail": "/resources/img/pantalon6-1.jpg(ruta modificada)",
+    "code": "ajn64ds0",
+    "stock": 50,
+    "id": 8
+  }
+]

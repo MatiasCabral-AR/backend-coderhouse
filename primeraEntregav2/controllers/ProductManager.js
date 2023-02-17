@@ -3,7 +3,7 @@ import Manager from "./Manager.js";
 import {writeFile} from 'fs/promises';
 export default class ProductManager extends Manager{
     constructor(){
-            super('../models/dbProducts.json')
+            super('./models/dbProducts.json')
         }
     // ------------------------------------------------------------------------------------
     // Main functions
@@ -13,29 +13,28 @@ export default class ProductManager extends Manager{
         if (!this.#isValid(product, this.#keys(), products)) {// Chequeamos que el producto sea valido
            return false
         }
-        this.#assignId(product, products); // Le asignamos un id en base a los productos existentes
+        this.assignId(product, products); // Le asignamos un id en base a los productos existentes
         products.push(product)
         await writeFile(this.path, JSON.stringify(products, null, 2))
         return product
     
     }
-    async updateProduct(product){
-        // Funcion updateProduct que sera usada en #findProductAndExecute
-        async function foo(index, products, path) {
-            if(index >= 0){
-                const oldProduct = products[index]
-                Object.entries(oldProduct).forEach(([key1, value1]) => { // Por cada campo del producto "viejo"
-                    Object.entries(product).forEach(([key2, value2]) => { // Por cada campo del producto "nuevo"
-                        key1.toString() === key2.toString() ? value1 = value2 : null // Si hay campos que coinciden, reemplazamos los valores
-                    })
-                })
-                products[index] = product
-                await writeFile(path, JSON.stringify(products, null, 2))
-                return [oldProduct, product]
-            }else { return false }
-        }
-        let result = await this.findProductAndExecute(product, foo)
-        return result
+    async updateProduct(product, id){
+        const products = await this.getAll()
+        const index = products.indexOf(products.find(product => product.id === parseInt(id)))
+        if(index < 0){
+            return false}
+        let oldProduct = products[index]
+        Object.entries(oldProduct).forEach(([key1, value1]) => { // Por cada campo del producto "viejo"
+            Object.entries(product).forEach(([key2, value2]) => { // Por cada campo del producto "nuevo"
+                if(key1.toString() === key2.toString()){ // Si hay campos que coinciden, reemplazamos los valores
+                    oldProduct[key1] = product[key2]
+                }
+            })
+        })
+        products[index] = oldProduct
+        await writeFile(this.path, JSON.stringify(products, null, 2))
+        return oldProduct
     }
     // ------------------------------------------------------------------------------------
     // Private Aux functions

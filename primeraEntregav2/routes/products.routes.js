@@ -13,26 +13,27 @@ productsRouter.get('/', async (req, res) => {
 productsRouter.get('/:id', async (req, res) => {
     const product = await productsApi.getById(parseInt(req.params.id))
     if(!product){
-        res.status(404).send('ID not found')}
+        return res.status(404).send('ID not found')}
     res.json(product)
 })
 productsRouter.post('/', async (req, res) => {
     const product = await productsApi.addProduct(req.body)
     if(!product){
-        res.status(400).send('Invalid product')}
+        return res.status(400).send('Invalid product')}
     res.json(product)
 })
 productsRouter.put('/:id', async (req, res) => {
-    const product = productsApi.getById(parseInt(req.params.id))
-    const result = productsApi.updateProduct(req.body)
-    if(req.body.id != product.id || !result){
-        res.status(404).send('ID not found')}
+    const id = req.params.id
+    const product = req.body
+    const result = await productsApi.updateProduct(product, id)
+    if(!result){
+        return res.status(404).send('ID not found')}
     res.json(result)
 })
 productsRouter.delete('/:id', async (req, res) => {
-    const removed = await productsApi.getById(parseInt(req.params.id))
+    const removed = await productsApi.deleteById(parseInt(req.params.id))
     if(!removed){
-        res.status(404).send('ID not found')}
+        return res.status(404).send('ID not found')}
     res.json(removed)
 })
 

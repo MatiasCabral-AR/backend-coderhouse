@@ -3,7 +3,7 @@ import { writeFile } from 'fs/promises';
 
 export default class CartManager extends Manager{
     constructor(){
-        super('../models/dbCarts.json')
+        super('./models/dbCarts.json')
     }
     // ------------------------------------------------------------------------------------
     // Main functions
@@ -16,6 +16,7 @@ export default class CartManager extends Manager{
         }
         cart = this.assignId(cart, carts)
         this.saveCart(cart)
+        console.log(cart)
         return cart
     }
     async saveCart(cart){
@@ -32,19 +33,18 @@ export default class CartManager extends Manager{
             return true
         } catch (error) { return false }
     }
-    async addToCart(productId, quantity, cartId){
+    async addToCart(product, cartId){
         const cart = await this.getById(cartId)
         if(cart === false){
             return false
         } 
         const carts = await this.getAll()
-        var const cartProduct = cart.products.find(cartProduct => cartProduct.id === productId)
+        const cartProduct = cart.products.find(cartProduct => cartProduct.id === product.id)
         if(cartProduct){ // Si el producto a agregar al carrito ya existe ...
             cartProduct.quantity += quantity // Se incrementa segun filmina N°57 de CoderHouse
-            await this.updateCart(carts, cart, cartProduct)
+            product = await this.updateCart(carts, cart, cartProduct)
         }
         else{ // Si el producto a agregar al carrito no existe ...
-            product.quantity = quantity
             carts.push(product)
             await this.saveCarts(carts)
         }
