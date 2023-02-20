@@ -43,13 +43,18 @@ cartsRouter.post('/:cid/products', async (req, res) => {
     res.json(response)
 })
 cartsRouter.delete('/:cid/products/:pid', async (req, res) => {
-    const cart = await cartsApi.getById(req.params.cid)
-    const product = await productsApi.getById(req.params.pid)
-    cart ? product ? cart.products.some(element => element.id === product.id) ? 
-        (await cartsApi.updateCart({...cart, products : cart.products.filter(element => element.id != product.id)}), res.json({deleted_product : product})) : 
-            res.status(404).send('Product is not in cart') :
-                res.status(404).send('Product ID not found') :
-                    res.status(404).send('Cart ID not found');
+    const cart = await cartsApi.getById(parseInt(req.params.cid))
+    const product = await productsApi.getById(parseInt(req.params.pid))
+    if(!cart || !product){
+        return res.status(404).send('Check product ID or cart ID')}
+    const found = cart.products.some(element => element.id === product.id)
+    if(!found){
+        return res.status(404).send('Product is not in cart')}
+    const result = await cartsApi.deleteCartProduct(cart, product)
+    res.json({
+        cart : result[0],
+        deleted_product : result[1]
+    })
 })
 
 export default cartsRouter

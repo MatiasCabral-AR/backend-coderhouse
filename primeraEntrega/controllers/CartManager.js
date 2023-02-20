@@ -21,11 +21,14 @@ export default class CartManager extends Manager{
     }
     async saveCart(cart){
         const carts = await this.getAll()
-        carts.push(cart)
-        try {
-            await this.saveCarts(carts)
-            return true
-        } catch (error) { return false }
+        const exist = carts.find(element => element.id === cart.id)
+        const index = carts.indexOf(exist)
+        if(index < 0){
+            carts.push(cart)}
+        else{
+            carts[index] = cart}
+        await this.saveCarts(carts)
+        return true
     }
     async saveCarts(carts){
         try {
@@ -41,18 +44,23 @@ export default class CartManager extends Manager{
         const carts = await this.getAll()
         const cartProduct = cart.products.find(cartProduct => cartProduct.id === product.id)
         if(cartProduct){ // Si el producto a agregar al carrito ya existe ...
-            cartProduct.quantity += quantity // Se incrementa segun filmina N°57 de CoderHouse
-            product = await this.updateCart(carts, cart, cartProduct)
+            cartProduct.quantity += product.quantity // Se incrementa segun filmina N°57 de CoderHouse
+            product = await this.updateCart(cart, cartProduct, carts)
         }
         else{ // Si el producto a agregar al carrito no existe ...
-            carts.push(product)
-            await this.saveCarts(carts)
+            cart.products.push(product)
+            await this.saveCart(cart)
         }
         return product
     }
-    async updateCart(carts, cart, cartProduct){
-        const productIndex = cart.indexOf(cartProduct) // Obtenemos indice del producto
-        const cartIndex = carts.indexOf(cart) // Obtenemos indice del carrito
+    async updateCart(cart, cartProduct, carts){
+        if(!carts){
+            carts = await this.getAll()
+        }
+        const productReference = cart.products.find(element => element.id === cartProduct.id)
+        const productIndex = cart.products.indexOf(productReference) // Obtenemos indice del producto
+        const cartReference = carts.find(element => element.id === cart.id)
+        const cartIndex = carts.indexOf(cartReference) // Obtenemos indice del carrito
         if(cartIndex < 0 || productIndex < 0){
             return false
         }
@@ -60,13 +68,11 @@ export default class CartManager extends Manager{
         await this.saveCarts(carts)
         return cart
     }
-    async deleteCartProduct(cartId, product){
-        let cart = await this.getById(cartId)
-        if(cart === null){
-            return false
-        }
-        let newCart = cart.filter(element => element.id =! product.id)
-        await this.saveCart(newCart)
+    async deleteCartProduct(cart, product){
+        console.log(product.id)
+        console.log(cart.products)
+        cart.products = cart.products.filter(element => element.id !== product.id)
+        await this.saveCart(cart)
         return [cart, product]
     }
 }
