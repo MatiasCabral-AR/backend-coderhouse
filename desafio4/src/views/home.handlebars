@@ -1,0 +1,37 @@
+<header class="title d-flex flex-column">
+    <h1 class="text-light text-center mt-2 mb-5">Bienvenido {{this.name}} </h1>
+</header>
+<main>
+    <section class="container-fluid d-flex justify-content-around align-items-center products mt-4 border-light">
+        <div class="w-25">
+            <h4 class="text-light text-center border-bottom border-top border-light pb-2">Ingrese los datos del producto a agregar</h4>
+            <form id="newProduct" autocomplete="off" class="mt-3">
+                <input type="text" autocomplete="false" name="hidden" style="display:none">
+                <div class="form-group">
+                    <label for="id"><b class="text-light">ID</b></label>
+                    <input  id="ID" class="form-control bg-dark text-light" type="number" name="id" required>
+                </div>
+                <div class="form-group">
+                    <label for="name"><b class="text-light">Name</b></label>
+                    <input id="NAME" class="form-control bg-dark text-light" type="text" name="NAME" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="price"><b class="text-light">Price</b></label>
+                    <input id="price" class="form-control bg-dark text-light" type="number" name="price" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="src"><b class="text-light">SRC</b></label>
+                    <input id="src" class="form-control bg-dark text-light" type="text" name="src" required>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-primary mt-3 mb-5 style-button">Enviar</button>
+                </div>
+            </form>
+        </div>
+        <div class="border" id="productos">
+            {{>realTimeProducts}}
+        </div>
+    </section>
+</main>
