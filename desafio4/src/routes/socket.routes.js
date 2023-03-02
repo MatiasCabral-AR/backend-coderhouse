@@ -1,17 +1,10 @@
-import ProductManager from "../controllers/ProductManager.js";
 import { Router } from "express";
 
-const socketRouter = new Router();
-const productsApi = new ProductManager();
+const socketRouter = new Router()
 
-// Routes
-
+// Router
 socketRouter.get('/realTimeProducts', async(req, res) => {
-    const products = await productsApi.getAll()
-    res.render('home', {
-        titulo : 'Pagina de mati',
-        products: products
-    })
+    res.render('home', {})
 })
 
 export default socketRouter

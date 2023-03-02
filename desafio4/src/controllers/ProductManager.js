@@ -10,6 +10,7 @@ export default class ProductManager extends Manager{
     
     async addProduct(product){
         const products = await this.getAll()
+        console.log(product)
         if (!this.#isValid(product, this.#keys(), products)) {// Chequeamos que el producto sea valido
            return false
         }
