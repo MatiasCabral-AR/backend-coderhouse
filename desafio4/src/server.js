@@ -4,8 +4,6 @@ import productsRouter from './routes/products.routes.js';
 import socketRouter from './routes/socket.routes.js';
 import { engine } from 'express-handlebars';
 import { Server as SocketServer} from 'socket.io';
-import http from 'http';
-import uest from 'uest';
 import cors from 'cors';
 
 // Dirname 
@@ -37,10 +35,26 @@ app.use('/', socketRouter)
 
 // Socket Events 
 io.on('connection', async socket => {
-    fetch('http://localhost:4000/api/products')
-    .then(response => response.json())
-    .then(products => socket.emit('update-products', products))
     console.log('Socket on Backend')
+    const products = await fetch('http://localhost:4000/api/products')
+                        .then(response => response.json())
+    socket.emit('render-products', products)
+    socket.on('new-product', async product => {
+        fetch('http://localhost:4000/api/products', 
+            { method : 'post',
+              headers : {"Content-type" : "application/json"},
+              body : JSON.stringify(product)})
+        .then(response => response.json())
+        .then(product => products.push(product) && socket.emit('render-products', products))
+    })
+    socket.on('delete-product', async id => {
+        const url = `http://localhost:4000/api/products/${id}`;
+        const producto = await fetch(url, {method : 'delete', headers : {"Content-type" : "application/json"}})
+                              .then(response => response.json())
+        let index = products.indexOf(products.find(product => product.id === producto.id))
+        products.splice(index, 1)
+        socket.emit('render-products', products)
+    })
 })
 
 

@@ -10,9 +10,8 @@ export default class ProductManager extends Manager{
     
     async addProduct(product){
         const products = await this.getAll()
-        console.log(product)
         if (!this.#isValid(product, this.#keys(), products)) {// Chequeamos que el producto sea valido
-           return false
+            return false
         }
         this.assignId(product, products); // Le asignamos un id en base a los productos existentes
         products.push(product)
@@ -51,7 +50,7 @@ export default class ProductManager extends Manager{
         // y que el codigo sea valido. ATENCION ! EL PRODUCTO DEBE ESTAR EN ORDEN
         if(Object.values(keys).toString() === Object.keys(product).toString() && this.#checkCode(product.code, products)){ 
             return true
-        }
+        } 
         return false
     }
     #keys(){
