@@ -25,6 +25,5 @@ io.on('connection', socket => {
                 socket.emit('get-messages', messages)
             })
         })
-
     })
 })
