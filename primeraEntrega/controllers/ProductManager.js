@@ -17,7 +17,6 @@ export default class ProductManager extends Manager{
         products.push(product)
         await writeFile(this.path, JSON.stringify(products, null, 2))
         return product
-    
     }
     async updateProduct(product, id){
         const products = await this.getAll()
