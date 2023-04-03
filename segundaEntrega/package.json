@@ -1,13 +1,15 @@
 {
+  "type": "module",
   "name": "segundaentrega",
   "version": "1.0.0",
-  "description": "",
+  "description": "API utilizando MongoAtlas",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Matias Cabral",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
@@ -18,5 +20,8 @@
     "mongoose-paginate-v2": "^1.7.1",
     "node-fetch": "^3.3.1",
     "socket.io": "^4.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
 }

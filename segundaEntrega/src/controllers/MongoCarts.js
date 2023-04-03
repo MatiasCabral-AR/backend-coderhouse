@@ -10,23 +10,22 @@ class MongoCarts extends MongoManager{
     }
     async newCart(cart){
         this.setConnection()
-        const response = await this.model.create(cart)
+        const response = await this.model.create({products : cart})
         return response
     }
-    async addToCart(cartId, product){
+    async addToCart(cartId, newProduct){
         this.setConnection()
         const cart = await this.model.findById({_id : cartId})
         if(cart === null){
-            return false
-        }
-        const response = await this.model.findByIdAndUpdate({_id : cartId}, {cart : cart.push(product)}, {new:true})
+            return false }
+        const response = await this.model.findByIdAndUpdate({_id : cartId}, {cart : cart.push(newProduct)}, {new:true})
         return response
     }
     async deleteCartProduct(cart, productId){
         this.setConnection()
         const index = cart.products.map(element => element.id).indexOf(productId)
         if(index === -1){
-            return false}
+            return false }
         cart.products.splice(index, 1)
         const response = await this.model.findByIdAndUpdate({_id : id}, {cart : cart})
         return response

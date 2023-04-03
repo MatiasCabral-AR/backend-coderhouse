@@ -10,8 +10,7 @@ export class MongoProducts extends MongoManager{
     async getElements(limit, page, filter, sort){
         super.setConnection()
         try {
-            const elements = await this.model.paginate({price : {$gt : filter}}, {limit:limit, page:page, sort:{price : sort}})
-            console.log(elements)
+            const elements = await this.model.paginate({price : {$gte : filter}}, {limit:limit, page:page, sort:{price : sort}})
             return elements
         } catch (error) {
             return new Error(error.message)

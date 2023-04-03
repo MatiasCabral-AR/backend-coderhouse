@@ -1,59 +1,75 @@
 import { Router } from "express";
-import CartManager from './../controllers/CartManager.js';
-import ProductManager from "../controllers/ProductManager.js";
+import MongoCarts from "../controllers/MongoCarts.js";
 
 const cartsRouter = new Router()
-const cartsApi = new CartManager()
-const productsApi = new ProductManager()
-
-// Routes
+const cartsApi = new MongoCarts()
 
 cartsRouter.get('/', async (req, res) => {
-    const carts = await cartsApi.getAll()
-    if(!carts){
-        return res.status(500).send('Internal Server Error')}
-    res.json(carts)
+    const {limit, page, query, sort} = req.query
+    const carts = await cartsApi.getElements(limit, page, query, sort)
+    if(carts instanceof Error){
+        res.status(400).send('Something went wrong, please try again')
+    }else{res.json(carts)}
 })
-cartsRouter.post('/', async (req, res) => {
-    const cart = await cartsApi.newCart()
-    res.json(cart)
+cartsRouter.get('/:cid', async(req, res) => {
+    const cart = await cartsApi.getById(req.params.cid)
+    if(cart instanceof Error || cart === null){
+        res.status(404).json({
+            status : 404,
+            response : 'ID not found',
+            detail : cart === null ? 'Recently deleted' : cart.message
+        })
+    }else{res.json({
+        status : 200,
+        response : 'Found',
+        cart : cart
+    })}
 })
-cartsRouter.delete('/:cid', async (req, res) => {
-    const response = await cartsApi.deleteById(parseInt(req.params.cid))
-    if(!response){ 
-        return res.status(404).send('ID not found')}
-    res.json({
-        cart_deleted : response
-    })
+cartsRouter.post('/', async(req, res)=> {
+    let cart = Object.keys(req.body).length === 0 ? [] : req.body
+    let response = await cartsApi.newCart(cart)
+    if(response instanceof Error){
+        res.status(400).send('Something went wrong, please try again')
+    }else{res.json({
+        status : 200,
+        response : 'Cart added',
+        newCart : response
+    })}
 })
-cartsRouter.get('/:cid/products', async (req, res) => {
-    const cart = await cartsApi.getById(parseInt(req.params.cid))
-    if(!cart){
-        return res.status(404).send('ID not found')}
-    res.json(cart)
+cartsRouter.delete('/:cid', async (req, res)=> {
+    const id = req.params.cid
+    const deleted = await cartsApi.deleteById(id)
+    if(deleted instanceof Error){
+        res.status(400).send('ID not found')
+    }else{res.json({
+        status : 200,
+        response : 'Deleted Successfully',
+        deletedCart : deleted
+    })}
 })
-cartsRouter.post('/:cid/products', async (req, res) => {
-    const request = {id : req.body.id, quantity : req.body.quantity}
-    const product = await productsApi.getById(request.id)
-    if(!product){
-        return res.status(404).send('Product ID not found')}
-    const response = await cartsApi.addToCart(request, parseInt(req.params.cid))
-    if(!response){
-        return res.status(404).send('Cart ID not found')}
-    res.json(response)
+cartsRouter.post('/:cid/products', async (req, res)=> {
+    
+    const product = req.body
+    const cart = await cartsApi.addToCart(parseInt(req.params.cid), product)
+    let result = cart === false ? [404,'Cart not found'] 
+                : cart === null ? [400,'Something went wrong, please try again']
+                : [200, found]
+    res.status(result[0]).send({
+        status : result[0],
+        response : result[1],
+        cart : cart
+    })    
 })
-cartsRouter.delete('/:cid/products/:pid', async (req, res) => {
-    const cart = await cartsApi.getById(parseInt(req.params.cid))
-    const product = await productsApi.getById(parseInt(req.params.pid))
-    if(!cart || !product){
-        return res.status(404).send('Check product ID or cart ID')}
-    const found = cart.products.some(element => element.id === product.id)
-    if(!found){
-        return res.status(404).send('Product is not in cart')}
-    const result = await cartsApi.deleteCartProduct(cart, product)
-    res.json({
-        cart : result[0],
-        deleted_product : result[1]
+cartsRouter.delete('/:cid/products/:pid', async(req, res)=>{
+    const cart = await cartsApi.getById(req.params.cid)
+    if(cart instanceof Error){
+        res.status(404).send('Cart not found')}
+    const response = await cartsApi.deleteCartProduct(cart, req.params.pid)
+    const result = response === false ? [404,'Product not found'] : [200,'Found']
+    res.status(result[0]).send({
+        status : result[0],
+        response : result[1],
+        cart : cart
     })
 })
 
