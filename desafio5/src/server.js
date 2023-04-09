@@ -4,6 +4,7 @@ import MongoStore from 'connect-mongo';
 import {engine} from 'express-handlebars';
 import { Server as SocketServer} from 'socket.io';
 import passport from "passport";
+import {MongoUsers} from './containers/MongoUsers.js';
 import { Strategy as LocalStrategy} from "passport-local";
 import { Strategy as TwitterStrategy } from "passport-twitter";
 import {createHash, isValidPassword} from './helpers/helpers.js'
@@ -43,74 +44,80 @@ app.use(passport.session())
 // Passport
 // -------------------------------------------------------------------
 // Passport Sign-up, Log-in and Twitter verification
-
+const User = new MongoUsers()
     // Twitter
 passport.use(new TwitterStrategy({
-    consumerKey: process.env.TWITTER_CONSUMER_KEY,
-    consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+    consumerKey: process.env.TWITTER_API_KEY,
+    consumerSecret: process.env.TWITTER_API_KEY_SECRET,
     callbackURL: '/auth/twitter/callback'
-}, (token, tokenSecret, userProfile, done) => {
-    return done(null, userProfile)
-}));
+    }, 
+    async (token, tokenSecret, userProfile, done) => {
+        try {
+            const user = await User.findOneAndUpdate({ twitterId: userProfile.id }, {
+                twitterId: userProfile.id,
+                username: userProfile.username
+            },{ upsert: true, new: true })
+            done(null, user);
+        } catch (err) {
+            done(err);
+        }
+    }
+));
     // Local
 passport.use('signup', new LocalStrategy({
-    passReqToCallback: true
-},
-    (req, username, password, done) => {
-        User.findOne({ 'username': username }, (err, user) => {
-            if (err) {
-                return done(err);
-            };
-
+    passReqToCallback: true},
+    async (req, username, password, done) => {
+        try {
+            const user = await User.findOne({ 'username': username });
             if (user) {
-                return done(null, false);
-            }
-
+                return done(null, false);}
             const newUser = {
                 username: username,
                 password: createHash(password),
                 email: req.body.email,
                 firstName: req.body.firstName,
-                lastName: req.body.lastName
-            };
-
-            User.create(newUser, (err, userWithId) => {
-                if (err) {
-                    return done(err);
-                }
-                return done(null, userWithId);
-            })
-        });
+                lastName: req.body.lastName};
+            const newUserWithId = await User.create(newUser);
+            return done(null, newUserWithId);
+        } catch (err) {
+            return done(err);}
     }
 ));
+
 passport.use('login', new LocalStrategy(
-    (username, password, done) => {
-        User.findOne({ username }, (err, user) => {
-            if (err) {
-                return done(err);
-            }
+async (username, password, done) => {
+    try {
+        const user = await User.findOne({ username });
+        if (!user) {
+            return done(null, false);
+        }
 
-            if (!user) {
-                return done(null, false);
-            }
+        if (!isValidPassword(user, password)) {
+            return done(null, false);
+        }
 
-            if (!isValidPassword(user, password)) {
-                return done(null, false);
-            }
-
-            return done(null, user);
-        })
+        return done(null, user);
+    } catch (err) {
+        return done(err);
     }
-));
+}));
 // Twitter serializer
 passport.serializeUser((user, callback)=> {
     callback(null, user);
 });
 passport.deserializeUser((user, callback)=> {
     if(user._id){
-        User.findById(user._id, callback)
+        User.setConnection()
+        User.model.findById(user._id).exec()
+            .then((user) => {
+                return callback(null, user);
+            })
+            .catch((err) => {
+                return callback(err);
+            });
+    } else {
+        return callback(null, user);
     }
-    else{callback(null, user)}
 });
 // Handlebars
 app.engine('handlebars', engine());

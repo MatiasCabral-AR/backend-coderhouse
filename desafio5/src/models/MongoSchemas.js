@@ -18,6 +18,10 @@ const cartSchema = new Schema({
 cartSchema.plugin(paginate)
 
 const usersName = 'users'
-const usersSchema = new Schema
+const usersSchema = new Schema({
+    username : {type : String, required : true, unique : true},
+    password : {type : String, required : true},
+    twitterId : {type : String, unique : true}
+})
 
-export {productName, productSchema, cartsName, cartSchema}
+export {productName, productSchema, cartsName, cartSchema, usersName, usersSchema}

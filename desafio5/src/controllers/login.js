@@ -1,4 +1,6 @@
 export function getHome(req, res) {
+    if(!req.user){
+        return res.redirect('/')}
     const user = req.user
     req.session.cookie.expires = new Date(Date.now() + 30000)
     res.render('home', {name : user.username, email : user.email})
@@ -44,12 +46,15 @@ export function getFailedSignUp(req, res) {
 
 
 export function getLogOut(req, res, next) {
+    if(!req.user){
+        return res.redirect('/')
+    }
     const name = req.user.username ? req.user.username : req.session.name
     req.logout((err) => {
         if (err) { return next(err); }
         req.session.destroy((error) => {
-            if(error){res.json({status : 'Logout error', body : error})}
-            else{res.render('logout', {nombre : name});}
+            if(error){return res.json({status : 'Logout error', body : error})}
+            else{return res.render('logout', {nombre : name});}
         })
     });
 }
