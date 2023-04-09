@@ -1,0 +1,49 @@
+
+<header class="title d-flex flex-column">
+    <h1 class="text-light text-center mt-2 mb-5">Bienvenido {{this.name}}</h1>
+    <form method="post" action="/logout">
+        <button class="btn btn-primary style-button" type="submit"> Log-out </button>
+    </form>
+</header>
+<main>
+    <section class="container-fluid d-flex justify-content-around align-items-center products mt-4 border-light">
+        <div class="w-25">
+            <h4 class="text-light text-center">Ingrese los datos del producto</h4>
+            <form id="newProduct" autocomplete="off">
+                <input type="text" autocomplete="false" name="hidden" style="display:none">
+                <div class="form-group">
+                    <label for="title"><b class="text-light">Title</b></label>
+                    <input  id="title" class="form-control bg-dark text-light" type="text" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="description"><b class="text-light">Description</b></label>
+                    <input id="description" class="form-control bg-dark text-light" type="text" name="description" required>
+                </div>
+                <div class="form-group">
+                    <label for="price"><b class="text-light">Price</b></label>
+                    <input id="price" class="form-control bg-dark text-light" type="number" name="price" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock"><b class="text-light">Stock</b></label>
+                    <input id="stock" class="form-control bg-dark text-light" type="number" name="stock" required>
+                </div>
+                <div class="form-group">
+                    <label for="thumbnail"><b class="text-light">Thumbnail</b></label>
+                    <input id="thumbnail" class="form-control bg-dark text-light" type="text" name="thumbnail" required>
+                </div>
+                <div class="form-group">
+                    <label for="code"><b class="text-light">Code</b></label>
+                    <input id="code" class="form-control bg-dark text-light" type="text" name="code" required>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-primary mt-3 mb-5 style-button">Enviar</button>
+                </div>
+            </form>
+        </div>
+        <div class="border" id="productos">
+            <!-- Productos -->
+        </div>
+    </section>
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script src="../js/main.js"></script>
