@@ -21,7 +21,7 @@ const usersName = 'users'
 const usersSchema = new Schema({
     username : {type : String, required : true, unique : true},
     password : {type : String, required : true},
-    twitterId : {type : String, unique : true}
+    twitterId : {type : String}
 })
 
 export {productName, productSchema, cartsName, cartSchema, usersName, usersSchema}

@@ -65,6 +65,14 @@
   background-color:#1e2833;
 }
 
+.form-select{
+  background:#1e2833;
+  border:none;
+  border-bottom:1px solid #434a52;
+  box-shadow:none;
+  color:inherit;
+}
+
 /* Chat new */
 
 .chat {
