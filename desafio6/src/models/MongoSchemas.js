@@ -21,8 +21,10 @@ const usersName = 'users'
 const usersSchema = new Schema({
     username : {type : String, required : true, unique : true},
     password : {type : String, required : true},
+    email : {type : String},
     twitterId : {type : String},
-    // Agregar los campos nuevos !!! 
+    fullName : {type : String},
+    role :  {type : String}
 })
 
 export {productName, productSchema, cartsName, cartSchema, usersName, usersSchema}

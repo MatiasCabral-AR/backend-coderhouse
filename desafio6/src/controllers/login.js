@@ -3,7 +3,7 @@ export function getHome(req, res){
         return res.redirect('/')}
     const user = req.user
     req.session.cookie.expires = new Date(Date.now() + 30000)
-    res.render('home', {name : user.username, email : user.email})
+    res.render('home', {fullName : user.fullName, role : user.role})
 }
 export function getLogIn(req, res){
     if (req.isAuthenticated()) {res.redirect('home');}
@@ -20,13 +20,15 @@ export function getSignUp(req, res){
 export function postLogin(req, res){
     const user = req.user;
     req.session.name = user.username;
-    res.render('home', {name : user.username, email : user.email});
+    console.log(user)
+    res.render('home', {fullName : user.username, role : user.role});
 }
 export function postSignup(req, res){
     req.session.name = req.user.username;
     res.render('home', {name : req.session.name});
 }
 export function getFailedLogIn(req, res){
+    // Aca aprendi a usar connect-flash pero no me alcanza el tiempo
     const flashError = req.flash('error')[0]
     console.log(flashError)
     res.render('login-error', {flashError})

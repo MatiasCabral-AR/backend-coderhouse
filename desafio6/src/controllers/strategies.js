@@ -12,10 +12,8 @@ export async function signupLocalStrategy(req, username, password, done){
             username: username,
             password: createHash(password),
             email: req.body.email,
-            firstName: req.body.firstname,
-            lastName: req.body.lastname,
-            role: req.body.role,
-            twitterId : ""};
+            fullName: `${req.body.firstname} ${req.body.lastname}`,
+            role: req.body.role};
         console.log(newUser)
         const newUserWithId = await User.create(newUser);
         console.log(newUserWithId)
@@ -45,7 +43,7 @@ export async function twitterStrategy(token, tokenSecret, userProfile, done){
     try {
         const updateFields = {
             username: userProfile.screen_name,
-            fullname: userProfile.name,
+            fullName: userProfile.name,
             role : "user",
             twitterId : userProfile.id
           }
