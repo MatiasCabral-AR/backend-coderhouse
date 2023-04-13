@@ -42,8 +42,8 @@ export async function loginLocalStrategy(username, password, done){
 export async function twitterStrategy(token, tokenSecret, userProfile, done){
     try {
         const updateFields = {
-            username: userProfile.screen_name,
-            fullName: userProfile.name,
+            username: userProfile._json.screen_name,
+            fullName: userProfile._json.name,
             role : "user",
             twitterId : userProfile.id
           }

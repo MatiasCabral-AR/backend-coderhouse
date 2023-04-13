@@ -54,15 +54,13 @@ passport.use(new TwitterStrategy({
     async (token, tokenSecret, userProfile, done) => {
         try {
             const updateFields = {
-                username: userProfile.username,
-                fullname: userProfile.name,
-                role : "user"
-              };
-              if (userProfile.id) {
-                updateFields.twitterId = userProfile.id;
+                username: userProfile._json.screen_name,
+                fullName: userProfile._json.name,
+                role : "user",
+                twitterId : userProfile.id
               }
             const user = await User.findOneAndUpdate({ twitterId: userProfile.id },
-                 {updateFields},{ upsert: true, new: true })
+                 updateFields,{ upsert: true, new: true })
             done(null, user);
         } catch (err) {
             done(err);
@@ -74,7 +72,6 @@ passport.use('signup', new LocalStrategy({
     passReqToCallback: true},
     async (req, username, password, done) => {
         try {
-            console.log(req.body)
             const user = await User.findOne({ 'username': username });
             if (user) {
                 return done(null, false);}
@@ -82,9 +79,8 @@ passport.use('signup', new LocalStrategy({
                 username: username,
                 password: createHash(password),
                 email: req.body.email,
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                twitterId : ""};
+                fullName: `${req.body.firstname} ${req.body.lastname}`,
+                role: req.body.role};
             const newUserWithId = await User.create(newUser);
             return done(null, newUserWithId);
         } catch (err) {

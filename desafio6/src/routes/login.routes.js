@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { getLogIn, getLogOut, getSignUp, getHome, getFailedLogIn, getFailedSignUp, postLogin, postSignup } from "../controllers/login.js";
 import passport from "passport";
-import { delayResponse } from "../helpers/helpers.js";
 
 const loginRouter = new Router()
 

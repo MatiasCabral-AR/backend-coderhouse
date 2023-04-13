@@ -25,7 +25,7 @@ export function postLogin(req, res){
 }
 export function postSignup(req, res){
     req.session.name = req.user.username;
-    res.render('home', {name : req.session.name});
+    res.render('home', {fullName : req.session.name});
 }
 export function getFailedLogIn(req, res){
     // Aca aprendi a usar connect-flash pero no me alcanza el tiempo
