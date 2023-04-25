@@ -1,0 +1,18 @@
+{{#if products.length}}
+    <div class="table-responsive">
+        <table class="table table-dark">
+            <tr><th id='id' class="text-center text-light">ID</th> <th class="text-center text-light">Title</th> <th class="text-center text-light">Price</th> <th class="text-center text-light">Stock</th> </tr>
+            {{#each products}}
+                <tr>
+                    <td class="text-light">{{this._id}}</td>
+                    <td class="text-light">{{this.title}}</td>
+                    <td class="text-center text-light">${{this.price}}</td>
+                    <td class="text-center text-light">{{this.stock}} u</td>
+                    <td><button data-id="{{this._id}}" onclick="deleteProduct(this)" class="ion-close-round text-danger bg-dark deleteButton"></button></td>
+                </tr>
+            {{/each}}
+        </table>
+    </div>
+    {{else}}
+    <h3 class="alert alert-danger">No hay productos cargados</h1>
+{{/if}}

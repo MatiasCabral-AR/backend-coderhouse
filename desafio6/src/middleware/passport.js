@@ -14,7 +14,6 @@ export async function signupLocalStrategy(req, username, password, done){
             email: req.body.email,
             fullName: `${req.body.firstname} ${req.body.lastname}`,
             role: req.body.role};
-        console.log(newUser)
         const newUserWithId = await User.create(newUser);
         console.log(newUserWithId)
         return done(null, newUserWithId);
@@ -41,6 +40,7 @@ export async function loginLocalStrategy(username, password, done){
 
 export async function twitterStrategy(token, tokenSecret, userProfile, done){
     try {
+        console.log(userProfile)
         const updateFields = {
             username: userProfile._json.screen_name,
             fullName: userProfile._json.name,
@@ -49,7 +49,6 @@ export async function twitterStrategy(token, tokenSecret, userProfile, done){
           }
         const user = await User.findOneAndUpdate({ twitterId: userProfile.id },
              updateFields,{ upsert: true, new: true })
-        console.log(user)
         done(null, user);
     } catch (err) {
         done(err);
