@@ -20,12 +20,12 @@ export function getSignUp(req, res){
 export function postLogin(req, res){
     const user = req.user;
     req.session.name = user.username;
+    console.log(user)
     res.render('home', {fullName : user.username, role : user.role});
 }
 export function postSignup(req, res){
-    const user = req.user;
-    req.session.name = user.username;
-    res.render('home', {fullName : user.username, role : user.role});
+    req.session.name = req.user.username;
+    res.render('home', {fullName : req.session.name});
 }
 export function getFailedLogIn(req, res){
     // Aca aprendi a usar connect-flash pero no me alcanza el tiempo

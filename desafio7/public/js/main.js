@@ -1,6 +1,7 @@
 // Vanilla JS
 const newProduct = document.getElementById('newProduct')
-newProduct.addEventListener('submit', event => {
+if(newProduct){
+  newProduct.addEventListener('submit', event => {
     event.preventDefault()
     const title = document.getElementById('title').value
     const price = document.getElementById('price').value
@@ -19,6 +20,7 @@ newProduct.addEventListener('submit', event => {
       })
     newProduct.reset();
   })
+}
 // Socket
 const socket = io()
 
@@ -32,13 +34,16 @@ socket.on('connect', () => {
 })
 
 socket.on('render-products', products => {
-  fetch('http://localhost:4000/views/products-render.handlebars')
+  const adminProducts = document.getElementById('productos')
+  if(adminProducts){
+    fetch('http://localhost:4000/views/products-render.handlebars')
     .then(response => {
        return response.text()
     })
     .then(plantilla => {
       let template = Handlebars.compile(plantilla);
       let html = template({products})
-      document.getElementById('productos').innerHTML = html;
+      adminProducts.innerHTML = html;
     })
+  }
 })

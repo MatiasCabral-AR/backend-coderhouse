@@ -15,7 +15,6 @@ export class MongoUsers extends MongoManager{
     async create(obj){
         this.setConnection()
         const response = await this.model.insertMany(obj)
-        
         return response
     }
     async findOneAndUpdate(obj, newObj, options){
@@ -23,4 +22,5 @@ export class MongoUsers extends MongoManager{
         const response = await this.model.findOneAndUpdate(obj, newObj, options)
         return response
     }
+
 }

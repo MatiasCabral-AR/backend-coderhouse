@@ -65,11 +65,6 @@ passport.serializeUser((user, callback)=> {
 passport.deserializeUser(deserializer);
 
 // Handlebars
-import Handlebars from 'handlebars';
-Handlebars.registerHelper('eq', function(a, b) {
-  return a === b;
-});
-
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', resolve(__dirname, './public/views'))
